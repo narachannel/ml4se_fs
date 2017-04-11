@@ -1,0 +1,5 @@
+#load @"include.system.collections.fsx" 
+#load @"include.system.resources.resourcemanager.fsx" 
+#load @"include.system.runtime.fsx" 
+#r "../../../packages/System.ValueTuple/lib/netstandard1.0/System.ValueTuple.dll" 
+printfn "system.valuetuple Loaded" 

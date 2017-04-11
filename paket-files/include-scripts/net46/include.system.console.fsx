@@ -1,0 +1,5 @@
+#load @"include.system.io.fsx" 
+#load @"include.system.runtime.fsx" 
+#load @"include.system.text.encoding.fsx" 
+#r "../../../packages/System.Console/lib/net46/System.Console.dll" 
+printfn "system.console Loaded" 

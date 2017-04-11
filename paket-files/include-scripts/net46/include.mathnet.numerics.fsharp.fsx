@@ -1,0 +1,5 @@
+#load @"include.fsharp.core.fsx" 
+#load @"include.mathnet.numerics.fsx" 
+#r "System.Numerics" 
+#r "../../../packages/MathNet.Numerics.FSharp/lib/net40/MathNet.Numerics.FSharp.dll" 
+printfn "mathnet.numerics.fsharp Loaded" 

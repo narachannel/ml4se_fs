@@ -1,0 +1,7 @@
+source https://www.nuget.org/api/v2
+nuget XPlot.Plotly
+nuget Accord
+nuget MathNet.Numerics
+nuget MathNet.Numerics.FSharp
+nuget Deedle
+nuget FSharp.Charting.Gtk
