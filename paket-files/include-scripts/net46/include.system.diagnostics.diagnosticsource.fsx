@@ -1,7 +1,0 @@
-#load @"include.system.collections.fsx" 
-#load @"include.system.diagnostics.tracing.fsx" 
-#load @"include.system.reflection.fsx" 
-#load @"include.system.runtime.fsx" 
-#load @"include.system.threading.fsx" 
-#r "../../../packages/System.Diagnostics.DiagnosticSource/lib/net46/System.Diagnostics.DiagnosticSource.dll" 
-printfn "system.diagnostics.diagnosticsource Loaded" 

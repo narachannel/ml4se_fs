@@ -1,9 +1,0 @@
-#load "include.system.collections.csx" 
-#load "include.system.globalization.csx" 
-#load "include.system.resources.resourcemanager.csx" 
-#load "include.system.runtime.csx" 
-#load "include.system.runtime.extensions.csx" 
-#load "include.system.threading.csx" 
-#r "System" 
-#r "mscorlib" 
-System.Console.WriteLine("system.text.regularexpressions Loaded"); 

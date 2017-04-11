@@ -1,6 +1,0 @@
-#load @"include.system.collections.fsx" 
-#load @"include.system.resources.resourcemanager.fsx" 
-#load @"include.system.runtime.fsx" 
-#load @"include.system.runtime.extensions.fsx" 
-#r "System" 
-printfn "system.net.webheadercollection Loaded" 

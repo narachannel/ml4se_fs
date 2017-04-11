@@ -1,5 +1,0 @@
-#load @"include.system.runtime.fsx" 
-#load @"include.system.threading.tasks.fsx" 
-#r "System" 
-#r "System.Core" 
-printfn "system.threading Loaded" 

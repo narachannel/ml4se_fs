@@ -1,9 +1,0 @@
-#load "include.system.io.csx" 
-#load "include.system.io.filesystem.primitives.csx" 
-#load "include.system.runtime.csx" 
-#load "include.system.runtime.handles.csx" 
-#load "include.system.text.encoding.csx" 
-#load "include.system.threading.tasks.csx" 
-#r "mscorlib" 
-#r "../../../packages/System.IO.FileSystem/lib/net46/System.IO.FileSystem.dll" 
-System.Console.WriteLine("system.io.filesystem Loaded"); 

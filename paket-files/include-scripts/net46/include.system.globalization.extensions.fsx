@@ -1,7 +1,0 @@
-#load @"include.system.globalization.fsx" 
-#load @"include.system.resources.resourcemanager.fsx" 
-#load @"include.system.runtime.fsx" 
-#load @"include.system.runtime.extensions.fsx" 
-#load @"include.system.runtime.interopservices.fsx" 
-#r "../../../packages/System.Globalization.Extensions/lib/net46/System.Globalization.Extensions.dll" 
-printfn "system.globalization.extensions Loaded" 
