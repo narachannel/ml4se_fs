@@ -5,3 +5,4 @@ nuget MathNet.Numerics
 nuget MathNet.Numerics.FSharp
 nuget Deedle
 nuget FSharp.Charting.Gtk
+nuget XPlot.GoogleCharts
