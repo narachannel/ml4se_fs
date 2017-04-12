@@ -10,37 +10,25 @@ open System
 //open XPlot.Plotly
 open Deedle
 open MathNet.Numerics
+open MathNet.Numerics.LinearAlgebra
+open MathNet.Numerics.Distributions
 open FSharp.Charting
 
 let dataset num = 
-    let rnd = Random()
     let x = [for i in 0.0 .. num - 1.0 -> i / (num - 1.0)]
-    let y = x |> List.map (fun ls -> sin (2.0 * Math.PI * ls) + rnd.NextDouble() / 2.0 - 0.25)
+    let y = x |> List.map (fun ls -> sin (2.0 * Math.PI * ls) + Normal(0.0, 0.3).Sample())
     Series(x, y)
 
 //dataset 10.0
 
 Chart.Point(Series.observations (dataset 10.0))
 
-(*
-def resolve(dataset, m):
-    t = dataset.y
-    phi = DataFrame()
-    for i in range(0,m+1):
-        p = dataset.x**i
-        p.name="x**%d" % i
-        phi = pd.concat([phi,p], axis=1)
-    tmp = np.linalg.inv(np.dot(phi.T, phi))
-    ws = np.dot(np.dot(tmp, phi.T), t)
+let resolve (x: float list)(y: float list) (m: float) =
+    let t = DenseVector.ofList y
+    let phi = matrix [for i in 0.0 .. m -> (x |> List.map (fun j -> j ** float i))]
+    let temp = phi.Transpose() * phi
+    temp.Inverse() * phi.Transpose() * t
 
-    def f(x):
-        y = 0
-        for i, w in enumerate(ws):
-            y += w * (x ** i)
-        return y
 
-    return f
-*)
-
-//let resolve (dataset: Series) (m: int) =
-    
+let fx (x: float) (ws: float list) =
+    ws |> List.mapi (fun i w -> w * (x ** float i)) |> List.sum 
