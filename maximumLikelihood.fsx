@@ -10,35 +10,61 @@ open MathNet.Numerics
 open MathNet.Numerics.LinearAlgebra
 open MathNet.Numerics.Distributions
 
-let x = [0.0 .. 0.1 .. 1.0]
-let y = x |> List.map (fun ls -> sin (2.0 * Math.PI * ls) + Normal(0.0, 0.3).Sample())
-
 let resolve (x: float list)(y: float list) (m: float) =
     let t = DenseVector.ofList y
     let phi = matrix [for i in 0.0 .. m -> (x |> List.map (fun j -> j ** float i))]
     let temp = phi * phi.Transpose()
     temp.Inverse() * phi * t |> Vector.toList
 
-
 let fx (x: float) (ws: float list) =
     ws |> List.mapi (fun i w -> w * (x ** float i)) |> List.sum 
 
-let sigma ws = 
-    let err = List.zip x y |> List.sumBy(fun a -> (snd a - (fx (fst a) ws)) ** 2.)
+let sigma x y w= 
+    let err = List.zip x y |> List.sumBy(fun a -> (snd a - (fx (fst a) w)) ** 2.)
     sqrt (err / float x.Length) 
 
-(*
-    def log_likelihood(dataset, f):
-    dev = 0.0
-    n = float(len(dataset))
-    for index, line in dataset.iterrows():
-        x, y = line.x, line.y
-        dev += (y - f(x))**2
-    err = dev * 0.5
-    beta = n / dev
-    lp = -beta*err + 0.5*n*np.log(0.5*beta/np.pi)
-    return lp
-*)
-// let logLikelihood = 
-//     let n = float x.Length
+let logLikelihood (x: float list)  y w = 
+    let n = float x.Length
+    let dev = List.zip x y |> List.sumBy(fun a -> (snd a - (fx (fst a) w)) ** 2.)
+    - n * 0.5 * (1.0 - log (0.5 * n / (dev * Math.PI)))
 
+
+let showResult m = 
+    let x = [0.0 .. 0.1 .. 1.0]
+    let xp = [0. .. 0.01 .. 1.0]
+    let y = x |> List.map (fun ls -> sin (2.0 * Math.PI * ls) + Normal(0.0, 0.3).Sample())
+    let chartSin = Scatter(x = xp, y = (xp |> List.map (fun ls -> sin (2.0 * Math.PI * ls))))
+    let dots = Scatter(x = x, y = y, mode = "markers")
+    let w = resolve x y m
+    let train s = Scatter(x = x, y = (x |> List.map(fun xi -> (fx xi w) + s)))
+    let s = sigma x y w
+    [chartSin; dots;(train 0.);(train s);(train -s)] |> Chart.Plot |> Chart.WithWidth 700 |> Chart.WithHeight 500 |> Chart.Show
+
+[0.0; 1.0; 3.0; 9.0] |> List.map showResult
+ 
+(*
+def show_loglikelihood_trend(train_set, test_set):
+    df = DataFrame()
+    train_mlh = []
+    test_mlh = []
+    for m in range(0,9): # 多項式の次数
+        f, sigma = resolve(train_set, m)
+        train_mlh.append(log_likelihood(train_set, f))
+        test_mlh.append(log_likelihood(test_set, f))
+    df = pd.concat([df,
+                    DataFrame(train_mlh, columns=['Training set']),
+                    DataFrame(test_mlh, columns=['Test set'])],
+                    axis=1)
+    df.plot(title='Log likelihood for N=%d' % N, grid=True, style=['-','--'])
+*)
+let showLogLikelihoodTrend x train test =
+    let w = resolve x train
+    let ms = [0. .. 10.]
+    let trainMlh = ms |> List.map (fun m -> logLikelihood x train (resolve x train m))
+    let testMlh = ms |> List.map(fun m -> logLikelihood x test (resolve x train m))
+    [Scatter(x = ms, y = trainMlh); Scatter(x = ms, y = testMlh)] |> Chart.Plot |> Chart.WithWidth 700 |> Chart.WithHeight 500 |> Chart.Show
+
+let x = [0.0 .. 0.1 .. 1.0]
+let train = x |> List.map (fun ls -> sin (2.0 * Math.PI * ls) + Normal(0.0, 0.3).Sample())
+let test = x |> List.map (fun ls -> sin (2.0 * Math.PI * ls) + Normal(0.0, 0.3).Sample())
+showLogLikelihoodTrend x train test

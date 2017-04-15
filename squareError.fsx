@@ -34,7 +34,7 @@ let showGraphs m =
     let fits = Scatter(x = x, y = (x |> List.map (fun xi -> fx xi ws)))
     [correct; dots; fits] |> Chart.Plot |> Chart.WithWidth 700 |> Chart.WithHeight 500 |> Chart.Show
 
-//[0.; 1.; 3.; 9.] |> List.map showGraphs
+[0.; 1.; 3.; 9.] |> List.map showGraphs
 
 let showRms = 
     let ms = [0. .. 10.]
