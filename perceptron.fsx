@@ -18,11 +18,13 @@ type DotType =
 
 type Dot = { X : float ; Y : float; DotType : DotType}
 
+//(20, [15,10], 15, 30, [0,0], 15)
+//(20, [15,10], 30, 30, [0,0], 30)
 let data2d = 
-    let x1 = dots 20 15. 2.
-    let y1 = dots 20 10. 2.
-    let x2 = dots 30 0. 3.
-    let y2 = dots 30 0. 3.
+    let x1 = dots 20 15. 5.
+    let y1 = dots 20 10. 5.
+    let x2 = dots 30 0. 5.
+    let y2 = dots 30 0. 5.
     //[Scatter(x = x1, y = y1, mode = "markers"); Scatter(x = x2, y = y2, mode = "markers")]|> Chart.Plot |> Chart.Show
     (List.zip x2 y2 |> List.map (fun xy -> { X = fst xy; Y = snd xy; DotType = DotType.Cross}))
     @ (List.zip x1 y1 |> List.map (fun xy -> { X = fst xy; Y = snd xy; DotType = DotType.Circle}))
@@ -62,7 +64,8 @@ let errorRate (bias: float) (w: float * float * float) (data: Dot list) =
 let showResult = 
     let data = data2d
     let bias = (List.averageBy(fun d -> d.X) data + List.averageBy(fun d -> d.Y) data ) * 0.5
-    let result = (runMany data).[29]
+    let results = runMany data
+    let result = results.[29]
     let w0 = unpack3 result 0
     let w1 = unpack3 result 1
     let w2 = unpack3 result 2
@@ -74,7 +77,6 @@ let showResult =
     let yrange = xrange |> List.map (fun x -> -x * w1 / w2 - bias * w0 / w2)
     let line = Scatter(x = xrange, y = yrange)
     [circles; crosses; line] |> Chart.Plot |> Chart.Show
-    let w0s = Scatter(x = [0 ..29], y = (List.map (fun r -> unpack3 r 0) result))
-    let w1s = Scatter(x = [0 ..29], y = (List.map (fun r -> unpack3 r 1) result))
-    let w2s = Scatter(x = [0 ..29], y = (List.map (fun r -> unpack3 r 2) result))
-    [w0s; w1s; w2s] |> Chart.Plot |> Chart.Show
+    let eRange = [0..29]
+    let w i = List.map (fun r -> (unpack3 r i)) results
+    [Scatter(x = eRange, y = (w 0)); Scatter(x = eRange, y = (w 1));Scatter(x = eRange, y = (w 2))] |> Chart.Plot |> Chart.Show
