@@ -42,21 +42,6 @@ let showResult m =
 
 [0.0; 1.0; 3.0; 9.0] |> List.map showResult
  
-(*
-def show_loglikelihood_trend(train_set, test_set):
-    df = DataFrame()
-    train_mlh = []
-    test_mlh = []
-    for m in range(0,9): # 多項式の次数
-        f, sigma = resolve(train_set, m)
-        train_mlh.append(log_likelihood(train_set, f))
-        test_mlh.append(log_likelihood(test_set, f))
-    df = pd.concat([df,
-                    DataFrame(train_mlh, columns=['Training set']),
-                    DataFrame(test_mlh, columns=['Test set'])],
-                    axis=1)
-    df.plot(title='Log likelihood for N=%d' % N, grid=True, style=['-','--'])
-*)
 let showLogLikelihoodTrend x train test =
     let w = resolve x train
     let ms = [0. .. 10.]
