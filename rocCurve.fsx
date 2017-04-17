@@ -29,9 +29,49 @@ let data2d =
     (List.zip x2 y2 |> List.map (fun xy -> { X = fst xy; Y = snd xy; DotType = DotType.Cross}))
     @ (List.zip x1 y1 |> List.map (fun xy -> { X = fst xy; Y = snd xy; DotType = DotType.Circle}))
 
+let unpack3 tup3 ind =
+    match ind, tup3 with
+    | 0, (a,_,_) -> a
+    | 1, (_,b,_) -> b
+    | 2, (_,_,c) -> c
+    | _, _ -> failwith (sprintf "Trying to access item %i of tuple with 3 entries." ind) 
+
+let logistic (data : Dot list)= 
+    let mutable w = vector [0.; 0.1; 0.1]
+    let phi = matrix [for d in data -> [1.0; d.X; d.Y]]
+    let t = vector [for d in data -> float d.DotType]
+    let solveW (w : Vector<float>) = 
+        let y = vector [for d in data -> 1. / (1. + exp (-w.[0] - w.[1] * d.X - w.[2] * d.Y))]
+        let r = vector [for i in 0 .. data.Length - 1 -> y.[i] * (1. - y.[i])]
+        let tmp1 = (phi.Transpose() * r).ToRowMatrix() * phi
+        let tmp2 = phi.Transpose() * (y - t)
+        w - tmp1.Inverse() * tmp2
+    let mutable wNew = solveW w
+    let mutable continueLooping = true
+    let mutable loopCount = 0
+    while continueLooping do
+        w <- solveW w
+        if (wNew - w).L2Norm() < 0.001 * w.L2Norm() then 
+            w <- wNew
+            continueLooping <- false
+        if loopCount > 29 then
+            continueLooping <- false
+        loopCount <- loopCount + 1
+    wNew
+
+    //     y = y[np.newaxis,:].T
+    //     tmp1 = np.linalg.inv(np.dot(np.dot(phi.T, r),phi))
+    //     tmp2 = np.dot(phi.T, (y-t))
+    //     w_new = w - np.dot(tmp1, tmp2)
+    //     # パラメータの変化が 0.1% 未満になったら終了
+    //     if np.dot((w_new-w).T, (w_new-w)) < 0.001 * np.dot(w.T, w):
+    //         w = w_new
+    //         break
+    //     w = w_new
+let error (w: Vector<float>) (data : Dot list)= 
+    data |> List.countBy (fun d -> if (float d.DotType * 2.0 - 1.0) * (w.[0] + w.[1] *d.X + w.[2]*d.Y) < 0. then 1. else 0.)
 (*
-def run_logistic(train_set):
-    w0, w1, w2 = w[0], w[1], w[2]
+     w0, w1, w2 = w[0], w[1], w[2]
     err = 0
     for index, line in train_set.iterrows():
         a = np.dot(np.array([1, line.x, line.y]), w)
@@ -44,29 +84,3 @@ def run_logistic(train_set):
     
     return w0, w1, w2, err_rate, result
 *)
-let unpack3 tup3 ind =
-    match ind, tup3 with
-    | 0, (a,_,_) -> a
-    | 1, (_,b,_) -> b
-    | 2, (_,_,c) -> c
-    | _, _ -> failwith (sprintf "Trying to access item %i of tuple with 3 entries." ind) 
-
-let logistic (data : Dot list)= 
-    let mutable w = vector [0.; 0.1; 0.1]
-    let phi = matrix [for d in data -> [1.0; d.X; d.Y]]
-    let t = vector [for d in data -> float d.DotType]
-    
-    
-    let y = [for d in data -> 1. / (1. + exp (-w.[0] - w.[1] * d.X - w.[2] * d.Y))]
-    //let r = y * (1.0 - y)
-    // r = np.diag(y*(1-y)) 
-    //     y = y[np.newaxis,:].T
-    //     tmp1 = np.linalg.inv(np.dot(np.dot(phi.T, r),phi))
-    //     tmp2 = np.dot(phi.T, (y-t))
-    //     w_new = w - np.dot(tmp1, tmp2)
-    //     # パラメータの変化が 0.1% 未満になったら終了
-    //     if np.dot((w_new-w).T, (w_new-w)) < 0.001 * np.dot(w.T, w):
-    //         w = w_new
-    //         break
-    //     w = w_new
-    w
