@@ -12,5 +12,11 @@ open MathNet.Numerics
 open MathNet.Numerics.LinearAlgebra
 open MathNet.Numerics.Distributions
 
-let file = File.Open("photo.jpg", FileMode.Open)
-let image = Image.FromFile("photo.jpg")
+
+let imageToArray = 
+    let image = Image.FromFile("photo.jpg")
+    let ms = new MemoryStream()
+    image.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg)
+    ms.ToArray() |> Array.map (fun b -> float b)
+
+imageToArray
