@@ -13,10 +13,13 @@ open MathNet.Numerics.LinearAlgebra
 open MathNet.Numerics.Distributions
 
 
+//Todo: Separate pixels into RGBs
 let imageToArray = 
     let image = Image.FromFile("photo.jpg")
     let ms = new MemoryStream()
     image.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg)
     ms.ToArray() |> Array.map float
+
+
 
 imageToArray

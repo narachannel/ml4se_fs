@@ -12,6 +12,14 @@ open MathNet.Numerics
 open MathNet.Numerics.LinearAlgebra
 open MathNet.Numerics.Distributions
 
-let x = [0.0 .. 0.1 .. 1.0]
+
+let x = [0.0; 0.3333; 0.6666; 1.0]
 let y = x |> List.map (fun ls -> sin (2.0 * Math.PI * ls) + Normal(0.0, 0.3).Sample())
+
+let resolve m = 
+    let beta = 1.0 / (0.3) **2.0
+    let alpha = 1.0 / 100.0 ** 2.0
+    let phi = matrix [for i in 0.0 .. m -> (x |> List.map (fun j -> j ** float i))]
+
+    beta
 
